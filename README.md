@@ -409,4 +409,5 @@ GET https://api.nasdaq.com/api/company/{SYMBOL}/sec-filings
 **Made for monitoring PCSA SEC filings** 📈
 
 #   s t o c k - s e c  
+ #   s t o c k - s e c  
  
