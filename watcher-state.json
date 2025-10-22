@@ -1,19 +1,41 @@
 {
-  "lastChecked": "2025-10-22T13:49:56.039Z",
-  "lastSeenFilings": [
-    "10/15/2025_SCHEDULE 13D/A_PROCESSA PHARMACEUTICALS, INC.",
-    "10/03/2025_4_NEAL JAMES R",
-    "10/03/2025_4_BALUCH KHOSO",
-    "10/03/2025_4_PANNU GERALDINE",
-    "10/03/2025_4_YORKE JUSTIN W",
-    "10/03/2025_4_GUY WENDY",
-    "10/03/2025_4_LIN PATRICK",
-    "10/03/2025_4_BIGORA SIAN",
-    "10/03/2025_4_SKIBSTED RUSSELL",
-    "10/03/2025_4_YOUNG DAVID",
-    "10/03/2025_4_NG GEORGE K",
-    "09/22/2025_S-8_company",
-    "09/18/2025_4/A_GUY WENDY",
-    "09/18/2025_4/A_YORKE JUSTIN W"
-  ]
+  "lastChecked": "2025-10-22T14:25:00.619Z",
+  "symbols": {
+    "PCSA": {
+      "lastSeenFilings": [
+        "10/15/2025_SCHEDULE 13D/A_PROCESSA PHARMACEUTICALS, INC.",
+        "10/03/2025_4_NEAL JAMES R",
+        "10/03/2025_4_BALUCH KHOSO",
+        "10/03/2025_4_PANNU GERALDINE",
+        "10/03/2025_4_YORKE JUSTIN W",
+        "10/03/2025_4_GUY WENDY",
+        "10/03/2025_4_LIN PATRICK",
+        "10/03/2025_4_BIGORA SIAN",
+        "10/03/2025_4_SKIBSTED RUSSELL",
+        "10/03/2025_4_YOUNG DAVID",
+        "10/03/2025_4_NG GEORGE K",
+        "09/22/2025_S-8_company",
+        "09/18/2025_4/A_GUY WENDY",
+        "09/18/2025_4/A_YORKE JUSTIN W"
+      ]
+    },
+    "PSTV": {
+      "lastSeenFilings": [
+        "10/21/2025_8-K_company",
+        "10/03/2025_4_HEDRICK MARC H",
+        "10/03/2025_4/A_HEDRICK MARC H",
+        "10/03/2025_4_SIMS ANDREW JOHN HUGH MACINTYRE",
+        "10/03/2025_4/A_SIMS ANDREW JOHN HUGH MACINTYRE",
+        "08/26/2025_8-K_company",
+        "08/25/2025_4_LENK ROBERT P",
+        "08/22/2025_S-8_company",
+        "08/15/2025_4_GUSE KYLE",
+        "08/15/2025_4_HEDRICK MARC H",
+        "08/15/2025_4_HAWKINS RICHARD J",
+        "08/15/2025_4_CLOWES HOWARD",
+        "08/15/2025_4_LENK ROBERT P",
+        "08/15/2025_4_SIMS ANDREW JOHN HUGH MACINTYRE"
+      ]
+    }
+  }
 }

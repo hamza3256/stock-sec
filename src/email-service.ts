@@ -1,5 +1,5 @@
 import { Resend } from "resend";
-import { SECFiling, EmailConfig } from "./types";
+import { SECFiling, SECFilingWithSymbol, EmailConfig } from "./types";
 
 export class EmailService {
   private resend: Resend;
@@ -13,14 +13,19 @@ export class EmailService {
   /**
    * Formats a filing for email display (mobile-responsive)
    */
-  private formatFilingHTML(filing: SECFiling): string {
+  private formatFilingHTML(filing: SECFilingWithSymbol): string {
     return `
       <table cellpadding="0" cellspacing="0" border="0" width="100%" style="margin-bottom: 16px; background-color: #ffffff; border: 1px solid #e5e7eb; border-radius: 8px; overflow: hidden;">
         <tr>
           <td style="padding: 20px;">
-            <!-- Filing Type Badge -->
-            <div style="display: inline-block; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: 600; margin-bottom: 12px;">
-              ${filing.formType}
+            <!-- Symbol & Filing Type Badge -->
+            <div style="margin-bottom: 12px;">
+              <span style="display: inline-block; background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: 700; margin-right: 8px;">
+                ${filing.symbol}
+              </span>
+              <span style="display: inline-block; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: 600;">
+                ${filing.formType}
+              </span>
             </div>
             
             <!-- Filing Details Table -->
@@ -99,12 +104,48 @@ export class EmailService {
   }
 
   /**
-   * Creates HTML email body for new filings (mobile-responsive)
+   * Creates HTML email body for new filings (mobile-responsive, multi-symbol)
    */
-  private createEmailHTML(filings: SECFiling[]): string {
-    const filingsHTML = filings.map((f) => this.formatFilingHTML(f)).join("");
-    const nasdaqFilingsUrl =
-      "https://www.nasdaq.com/market-activity/stocks/pcsa/sec-filings";
+  private createEmailHTML(filings: SECFilingWithSymbol[]): string {
+    // Group filings by symbol
+    const filingsBySymbol: { [symbol: string]: SECFilingWithSymbol[] } = {};
+    filings.forEach((filing) => {
+      if (!filingsBySymbol[filing.symbol]) {
+        filingsBySymbol[filing.symbol] = [];
+      }
+      filingsBySymbol[filing.symbol].push(filing);
+    });
+
+    const symbols = Object.keys(filingsBySymbol).sort();
+    
+    // Generate HTML for each symbol's filings
+    const filingsHTML = symbols
+      .map((symbol) => {
+        const symbolFilings = filingsBySymbol[symbol];
+        const symbolFilingsHTML = symbolFilings
+          .map((f) => this.formatFilingHTML(f))
+          .join("");
+
+        return `
+          <!-- Symbol Section Header -->
+          <table cellpadding="0" cellspacing="0" border="0" width="100%" style="margin: 24px 0 16px 0;">
+            <tr>
+              <td>
+                <h2 style="margin: 0; font-size: 18px; color: #111827; border-bottom: 2px solid #10b981; padding-bottom: 8px;">
+                  <span style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 4px 12px; border-radius: 6px; font-size: 14px; font-weight: 700; margin-right: 8px;">
+                    ${symbol}
+                  </span>
+                  ${symbolFilings.length} New Filing${
+          symbolFilings.length > 1 ? "s" : ""
+        }
+                </h2>
+              </td>
+            </tr>
+          </table>
+          ${symbolFilingsHTML}
+        `;
+      })
+      .join("");
 
     return `
 <!DOCTYPE html>
@@ -134,7 +175,9 @@ export class EmailService {
                 🔔 New SEC Filing Alert
               </h1>
               <p style="margin: 12px 0 0 0; color: #ffffff; font-size: 16px; opacity: 0.95;">
-                PCSA - Processa Pharmaceuticals Inc.
+                ${symbols.join(", ")} - ${filings.length} New Filing${
+      filings.length > 1 ? "s" : ""
+    }
               </p>
             </td>
           </tr>
@@ -162,15 +205,21 @@ export class EmailService {
               <!-- Filings List -->
               ${filingsHTML}
               
-              <!-- View All Filings Button -->
+              <!-- View All Filings Buttons -->
               <table cellpadding="0" cellspacing="0" border="0" width="100%" style="margin-top: 24px;">
-                <tr>
-                  <td align="center">
-                    <a href="${nasdaqFilingsUrl}" style="display: inline-block; background-color: #10b981; color: #ffffff; padding: 14px 32px; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 15px; text-align: center; box-shadow: 0 2px 4px rgba(16, 185, 129, 0.3);">
-                      📊 View All PCSA Filings on NASDAQ
-                    </a>
-                  </td>
-                </tr>
+                ${symbols
+                  .map(
+                    (sym) => `
+                  <tr>
+                    <td align="center" style="padding: 6px 0;">
+                      <a href="https://www.nasdaq.com/market-activity/stocks/${sym.toLowerCase()}/sec-filings" style="display: inline-block; background-color: #10b981; color: #ffffff; padding: 12px 28px; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 14px; text-align: center; box-shadow: 0 2px 4px rgba(16, 185, 129, 0.3);">
+                        📊 View All ${sym} Filings
+                      </a>
+                    </td>
+                  </tr>
+                `
+                  )
+                  .join("")}
               </table>
               
             </td>
@@ -197,8 +246,7 @@ export class EmailService {
                       })}
                     </p>
                     <p style="margin: 12px 0 0 0; color: #9ca3af; font-size: 12px;">
-                      <a href="${nasdaqFilingsUrl}" style="color: #6b7280; text-decoration: underline;">NASDAQ PCSA Filings</a> • 
-                      <a href="https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=PCSA&type=&dateb=&owner=exclude&count=100" style="color: #6b7280; text-decoration: underline;">SEC EDGAR</a>
+                      Monitoring: ${symbols.join(", ")}
                     </p>
                   </td>
                 </tr>
@@ -216,16 +264,25 @@ export class EmailService {
   }
 
   /**
-   * Sends email notification for new filings
+   * Sends email notification for new filings (multi-symbol support)
    */
-  async sendNewFilingsNotification(filings: SECFiling[]): Promise<void> {
+  async sendNewFilingsNotification(
+    filings: SECFilingWithSymbol[]
+  ): Promise<void> {
     if (filings.length === 0) {
       console.log("No filings to notify about");
       return;
     }
 
+    // Get unique symbols from filings
+    const symbols = [...new Set(filings.map((f) => f.symbol))].sort();
+    const symbolsText =
+      symbols.length > 3
+        ? `${symbols.slice(0, 3).join(", ")} +${symbols.length - 3} more`
+        : symbols.join(", ");
+
     const emailHTML = this.createEmailHTML(filings);
-    const subject = `${this.config.subject} - ${filings.length} New Filing${
+    const subject = `${symbolsText} - ${filings.length} New Filing${
       filings.length > 1 ? "s" : ""
     }`;
 

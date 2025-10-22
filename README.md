@@ -1,14 +1,16 @@
-# PCSA SEC Filings Watcher
+# Multi-Stock SEC Filings Watcher
 
-A robust, automated monitoring service that tracks SEC filings for PCSA (Processa Pharmaceuticals) via the NASDAQ API and sends email notifications when new filings are published.
+A robust, automated monitoring service that tracks SEC filings for multiple companies via the NASDAQ API and sends email notifications when new filings are published. Monitor PCSA, AAPL, TSLA, and any other publicly traded companies simultaneously!
 
 ## ✨ Features
 
+- 📊 **Multi-Stock Tracking** - Monitor unlimited companies simultaneously (PCSA, AAPL, TSLA, etc.)
 - 🔍 **Automatic Monitoring** - Periodically checks NASDAQ API for new SEC filings
-- 📧 **Email Notifications** - Beautiful HTML email alerts via Resend when new filings are detected
-- 💾 **State Management** - Tracks previously seen filings to avoid duplicate notifications
-- ⚙️ **Configurable** - Customizable check intervals, symbols, and email settings
+- 📧 **Smart Email Notifications** - Beautiful HTML emails grouped by symbol via Resend
+- 💾 **Per-Symbol State Management** - Tracks filings separately for each company
+- ⚙️ **Highly Configurable** - Customizable check intervals, symbols, and email settings
 - 🎯 **Production Ready** - Error handling, logging, and graceful shutdown support
+- 📱 **Mobile-Responsive Emails** - Professional emails that look great on all devices
 - 🧪 **Test Mode** - Verify email configuration with test emails
 
 ## 🚀 Quick Start
@@ -41,6 +43,7 @@ A robust, automated monitoring service that tracks SEC filings for PCSA (Process
    RESEND_API_KEY=re_your_actual_api_key
    EMAIL_FROM=SEC Filings <[email protected]>
    EMAIL_TO=[email protected]
+   SYMBOLS=PCSA,AAPL,TSLA
    ```
 
 5. **Test your email configuration** (optional but recommended)
@@ -64,35 +67,47 @@ A robust, automated monitoring service that tracks SEC filings for PCSA (Process
 
 ### Environment Variables
 
-| Variable                 | Required | Default                 | Description                         |
-| ------------------------ | -------- | ----------------------- | ----------------------------------- |
-| `RESEND_API_KEY`         | ✅ Yes   | -                       | Your Resend API key                 |
-| `EMAIL_FROM`             | ✅ Yes   | -                       | Verified sender email address       |
-| `EMAIL_TO`               | ✅ Yes   | -                       | Recipient email(s), comma-separated |
-| `EMAIL_SUBJECT`          | ❌ No    | `PCSA SEC Filing Alert` | Email subject line                  |
-| `SYMBOL`                 | ❌ No    | `PCSA`                  | Stock symbol to monitor             |
-| `CHECK_INTERVAL_MINUTES` | ❌ No    | `30`                    | Minutes between checks (min: 5)     |
-| `FILINGS_LIMIT`          | ❌ No    | `14`                    | Number of recent filings to track   |
-| `RUN_ONCE`               | ❌ No    | `false`                 | Run single check and exit           |
-| `SEND_TEST_EMAIL`        | ❌ No    | `false`                 | Send test email and exit            |
+| Variable                 | Required | Default             | Description                                      |
+| ------------------------ | -------- | ------------------- | ------------------------------------------------ |
+| `RESEND_API_KEY`         | ✅ Yes   | -                   | Your Resend API key                              |
+| `EMAIL_FROM`             | ✅ Yes   | -                   | Verified sender email address                    |
+| `EMAIL_TO`               | ✅ Yes   | -                   | Recipient email(s), comma-separated              |
+| `SYMBOLS`                | ✅ Yes   | -                   | Stock symbols to monitor (comma-separated)       |
+| `EMAIL_SUBJECT`          | ❌ No    | `SEC Filing Alert`  | Email subject line (symbol added automatically)  |
+| `CHECK_INTERVAL_MINUTES` | ❌ No    | `30`                | Minutes between checks (min: 5)                  |
+| `FILINGS_LIMIT`          | ❌ No    | `14`                | Number of recent filings to track (per symbol)   |
+| `RUN_ONCE`               | ❌ No    | `false`             | Run single check and exit                        |
+| `SEND_TEST_EMAIL`        | ❌ No    | `false`             | Send test email and exit                         |
 
 ### Example Configurations
 
-**Basic monitoring (check every 30 minutes):**
+**Single stock monitoring:**
 
 ```env
 RESEND_API_KEY=re_xxx
 EMAIL_FROM=Filings <[email protected]>
 EMAIL_TO=[email protected]
+SYMBOLS=PCSA
 ```
 
-**Frequent monitoring with multiple recipients:**
+**Track multiple tech stocks:**
 
 ```env
 RESEND_API_KEY=re_xxx
 EMAIL_FROM=SEC Alerts <[email protected]>
 EMAIL_TO=[email protected],[email protected]
-CHECK_INTERVAL_MINUTES=10
+SYMBOLS=AAPL,MSFT,TSLA,NVDA,META
+CHECK_INTERVAL_MINUTES=15
+```
+
+**Monitor biotech and pharma companies:**
+
+```env
+RESEND_API_KEY=re_xxx
+EMAIL_FROM=Biotech Tracker <[email protected]>
+EMAIL_TO=[email protected]
+SYMBOLS=PCSA,MRNA,BNTX,PFE,JNJ
+FILINGS_LIMIT=20
 ```
 
 **One-time check (useful for cron jobs):**
@@ -101,6 +116,7 @@ CHECK_INTERVAL_MINUTES=10
 RESEND_API_KEY=re_xxx
 EMAIL_FROM=Filings <[email protected]>
 EMAIL_TO=[email protected]
+SYMBOLS=PCSA,AAPL
 RUN_ONCE=true
 ```
 
@@ -293,23 +309,36 @@ The watcher outputs detailed logs:
 
 ```
 🚀 Starting SEC Filings Watcher...
-   Symbol: PCSA
+   Symbols: PCSA, AAPL, TSLA
    Check Interval: Every 30 minute(s)
-   Filings to track: 14
+   Filings to track: 14 per symbol
 
 🔍 Checking for new SEC filings...
 Timestamp: 10/22/2025, 2:30:00 PM
+Symbols: PCSA, AAPL, TSLA
 ────────────────────────────────────────────────────────────
+
+[PCSA] Fetching filings...
 Fetching SEC filings from: https://api.nasdaq.com/api/company/PCSA/sec-filings...
 Successfully fetched 14 filings
-Found 1 new filing(s)
-
-📋 New Filings Detected:
+[PCSA] Found 2 new filing(s)
+[PCSA] 📋 2 new filing(s):
   1. 8-K - Filed: 10/22/2025
+  2. 4 - Filed: 10/21/2025 (NEAL JAMES R)
 
-Sending email notification for 1 filing(s)...
+[AAPL] Fetching filings...
+Successfully fetched 14 filings
+[AAPL] No new filings detected
+
+[TSLA] Fetching filings...
+Successfully fetched 14 filings
+[TSLA] Found 1 new filing(s)
+[TSLA] 📋 1 new filing(s):
+  1. 10-Q - Filed: 10/20/2025
+
+📧 Sending email for 3 total new filing(s)...
 ✅ Email notification sent successfully!
-State saved: 14 filings tracked
+State saved: 3 symbol(s), 42 filings tracked
 ────────────────────────────────────────────────────────────
 ✅ Check completed successfully
 ```
@@ -397,17 +426,22 @@ GET https://api.nasdaq.com/api/company/{SYMBOL}/sec-filings
 
 ## 🎯 Roadmap
 
-- [ ] Add support for multiple stock symbols
+- [x] Add support for multiple stock symbols ✅
+- [x] Mobile-responsive email templates ✅
 - [ ] Webhook notifications (Slack, Discord, etc.)
 - [ ] Web dashboard for monitoring status
 - [ ] SMS notifications via Twilio
 - [ ] Database storage for filing history
 - [ ] Filtering by filing type (8-K, 10-Q, etc.)
+- [ ] Real-time notifications via WebSocket
+- [ ] Custom filing alerts (e.g., only 8-K forms)
 
 ---
 
-**Made for monitoring PCSA SEC filings** 📈
+**Monitor any publicly traded company's SEC filings** 📈 | Built with ❤️ for investors and traders
 
-#   s t o c k - s e c  
- #   s t o c k - s e c  
+#   s t o c k - s e c 
+ 
+ #   s t o c k - s e c 
+ 
  

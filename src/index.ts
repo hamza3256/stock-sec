@@ -7,7 +7,7 @@ dotenv.config();
 
 // Validate required environment variables
 function validateEnv(): void {
-  const required = ["RESEND_API_KEY", "EMAIL_FROM", "EMAIL_TO"];
+  const required = ["RESEND_API_KEY", "EMAIL_FROM", "EMAIL_TO", "SYMBOLS"];
   const missing = required.filter((key) => !process.env[key]);
 
   if (missing.length > 0) {
@@ -23,8 +23,18 @@ async function main() {
     validateEnv();
 
     // Configuration
+    const symbols = process.env.SYMBOLS!.split(",")
+      .map((s) => s.trim().toUpperCase())
+      .filter((s) => s.length > 0);
+
+    if (symbols.length === 0) {
+      console.error("❌ No symbols specified in SYMBOLS environment variable");
+      console.error("   Example: SYMBOLS=PCSA,AAPL,TSLA");
+      process.exit(1);
+    }
+
     const config = {
-      symbol: process.env.SYMBOL || "PCSA",
+      symbols,
       checkIntervalMinutes: parseInt(
         process.env.CHECK_INTERVAL_MINUTES || "30",
         10
@@ -33,7 +43,7 @@ async function main() {
       resendApiKey: process.env.RESEND_API_KEY!,
       emailFrom: process.env.EMAIL_FROM!,
       emailTo: process.env.EMAIL_TO!.split(",").map((e) => e.trim()),
-      emailSubject: process.env.EMAIL_SUBJECT || "PCSA SEC Filing Alert",
+      emailSubject: process.env.EMAIL_SUBJECT || "SEC Filing Alert",
       runOnce: process.env.RUN_ONCE === "true",
       sendTestEmail: process.env.SEND_TEST_EMAIL === "true",
     };
@@ -55,7 +65,7 @@ async function main() {
 
     // Initialize watcher
     const watcher = new SECFilingsWatcher({
-      symbol: config.symbol,
+      symbols: config.symbols,
       checkIntervalMinutes: config.checkIntervalMinutes,
       limit: config.limit,
       emailService,

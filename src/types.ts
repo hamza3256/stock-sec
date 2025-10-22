@@ -17,6 +17,10 @@ export interface SECFiling {
   view: SECFilingView;
 }
 
+export interface SECFilingWithSymbol extends SECFiling {
+  symbol: string;
+}
+
 export interface NasdaqAPIResponse {
   data: {
     symbol: string;
@@ -43,9 +47,15 @@ export interface NasdaqAPIResponse {
   };
 }
 
+export interface SymbolState {
+  lastSeenFilings: string[]; // Array of filing identifiers (filed + formType + reportingOwner)
+}
+
 export interface WatcherState {
   lastChecked: string;
-  lastSeenFilings: string[]; // Array of filing identifiers (filed + formType + reportingOwner)
+  symbols: {
+    [symbol: string]: SymbolState;
+  };
 }
 
 export interface EmailConfig {
