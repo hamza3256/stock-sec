@@ -439,9 +439,3 @@ GET https://api.nasdaq.com/api/company/{SYMBOL}/sec-filings
 ---
 
 **Monitor any publicly traded company's SEC filings** 📈 | Built with ❤️ for investors and traders
-
-#   s t o c k - s e c 
- 
- #   s t o c k - s e c 
- 
- 
