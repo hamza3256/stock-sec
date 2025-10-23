@@ -117,7 +117,7 @@ export class EmailService {
     });
 
     const symbols = Object.keys(filingsBySymbol).sort();
-    
+
     // Generate HTML for each symbol's filings
     const filingsHTML = symbols
       .map((symbol) => {

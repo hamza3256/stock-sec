@@ -67,17 +67,17 @@ A robust, automated monitoring service that tracks SEC filings for multiple comp
 
 ### Environment Variables
 
-| Variable                 | Required | Default             | Description                                      |
-| ------------------------ | -------- | ------------------- | ------------------------------------------------ |
-| `RESEND_API_KEY`         | ✅ Yes   | -                   | Your Resend API key                              |
-| `EMAIL_FROM`             | ✅ Yes   | -                   | Verified sender email address                    |
-| `EMAIL_TO`               | ✅ Yes   | -                   | Recipient email(s), comma-separated              |
-| `SYMBOLS`                | ✅ Yes   | -                   | Stock symbols to monitor (comma-separated)       |
-| `EMAIL_SUBJECT`          | ❌ No    | `SEC Filing Alert`  | Email subject line (symbol added automatically)  |
-| `CHECK_INTERVAL_MINUTES` | ❌ No    | `30`                | Minutes between checks (min: 5)                  |
-| `FILINGS_LIMIT`          | ❌ No    | `14`                | Number of recent filings to track (per symbol)   |
-| `RUN_ONCE`               | ❌ No    | `false`             | Run single check and exit                        |
-| `SEND_TEST_EMAIL`        | ❌ No    | `false`             | Send test email and exit                         |
+| Variable                 | Required | Default            | Description                                     |
+| ------------------------ | -------- | ------------------ | ----------------------------------------------- |
+| `RESEND_API_KEY`         | ✅ Yes   | -                  | Your Resend API key                             |
+| `EMAIL_FROM`             | ✅ Yes   | -                  | Verified sender email address                   |
+| `EMAIL_TO`               | ✅ Yes   | -                  | Recipient email(s), comma-separated             |
+| `SYMBOLS`                | ✅ Yes   | -                  | Stock symbols to monitor (comma-separated)      |
+| `EMAIL_SUBJECT`          | ❌ No    | `SEC Filing Alert` | Email subject line (symbol added automatically) |
+| `CHECK_INTERVAL_MINUTES` | ❌ No    | `30`               | Minutes between checks (min: 5)                 |
+| `FILINGS_LIMIT`          | ❌ No    | `14`               | Number of recent filings to track (per symbol)  |
+| `RUN_ONCE`               | ❌ No    | `false`            | Run single check and exit                       |
+| `SEND_TEST_EMAIL`        | ❌ No    | `false`            | Send test email and exit                        |
 
 ### Example Configurations
 

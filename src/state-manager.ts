@@ -17,7 +17,7 @@ export class StateManager {
       if (fs.existsSync(this.stateFilePath)) {
         const content = fs.readFileSync(this.stateFilePath, "utf-8");
         const state = JSON.parse(content);
-        
+
         // Migrate old format to new format if needed
         if (state.lastSeenFilings && !state.symbols) {
           console.log("Migrating old state format to multi-symbol format");
@@ -26,13 +26,16 @@ export class StateManager {
             symbols: {},
           };
         }
-        
+
         const totalFilings = Object.values(state.symbols || {}).reduce(
-          (sum: number, symbolState: any) => sum + (symbolState.lastSeenFilings?.length || 0),
+          (sum: number, symbolState: any) =>
+            sum + (symbolState.lastSeenFilings?.length || 0),
           0
         );
         console.log(
-          `Loaded state with ${Object.keys(state.symbols || {}).length} symbol(s), ${totalFilings} total filings tracked`
+          `Loaded state with ${
+            Object.keys(state.symbols || {}).length
+          } symbol(s), ${totalFilings} total filings tracked`
         );
         return state;
       }
@@ -55,13 +58,15 @@ export class StateManager {
     try {
       const content = JSON.stringify(state, null, 2);
       fs.writeFileSync(this.stateFilePath, content, "utf-8");
-      
+
       const totalFilings = Object.values(state.symbols).reduce(
         (sum, symbolState) => sum + symbolState.lastSeenFilings.length,
         0
       );
       console.log(
-        `State saved: ${Object.keys(state.symbols).length} symbol(s), ${totalFilings} filings tracked`
+        `State saved: ${
+          Object.keys(state.symbols).length
+        } symbol(s), ${totalFilings} filings tracked`
       );
     } catch (error) {
       console.error("Error saving state:", error);
@@ -74,12 +79,12 @@ export class StateManager {
    */
   updateSymbolState(symbol: string, filingIds: string[]): WatcherState {
     const state = this.loadState();
-    
+
     state.symbols[symbol] = {
       lastSeenFilings: filingIds,
     };
     state.lastChecked = new Date().toISOString();
-    
+
     this.saveState(state);
     return state;
   }
@@ -104,7 +109,7 @@ export class StateManager {
 
     return newFilings;
   }
-  
+
   /**
    * Gets the state for a specific symbol
    */

@@ -23,7 +23,8 @@ async function main() {
     validateEnv();
 
     // Configuration
-    const symbols = process.env.SYMBOLS!.split(",")
+    const symbols = process.env
+      .SYMBOLS!.split(",")
       .map((s) => s.trim().toUpperCase())
       .filter((s) => s.length > 0);
 
@@ -100,4 +101,3 @@ async function main() {
 
 // Run the application
 main();
-
